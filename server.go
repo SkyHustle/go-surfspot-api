@@ -5,6 +5,14 @@ import (
 	"net/http"
 )
 
+type Surfspot struct {
+	Name       string
+	Founder    string
+	ID         string
+	Beach      string
+	Difficulty int
+}
+
 // surfspotsHandler handles http request and response
 func surfspotsHandler(w http.ResponseWriter, r *http.Request) {
 	fmt.Println("w \n", w)
