@@ -5,6 +5,7 @@ import (
 	"net/http"
 )
 
+// surfspotsHandler handles http request and response
 func surfspotsHandler(w http.ResponseWriter, r *http.Request) {
 	fmt.Println("w \n", w)
 	fmt.Println("r \n", r)
@@ -12,6 +13,7 @@ func surfspotsHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func main() {
+	// HandleFunc registers surfspotsHandler for "/surfspots"
 	http.HandleFunc("/surfspots", surfspotsHandler)
 
 	// Simple http server that takes a port and a default handler
