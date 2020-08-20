@@ -19,21 +19,34 @@ type surfspotHandlers struct {
 }
 
 // surfspotHandlers handles http request and response
+// And is the method receiver surfspotHandlers
 func (h *surfspotHandlers) get(w http.ResponseWriter, r *http.Request) {
-	fmt.Println("w \n", w)
-	fmt.Println("r \n", r)
-	fmt.Printf("w is of type %T \n and r is of type %T ", w, r)
+
 }
 
+// newSurfspotHandlers is a contructor function that does not take any arguments
+// returns surfspotHandlers object
 func newSurfspotHandlers() *surfspotHandlers {
 	return &surfspotHandlers{
-		store: map[string]Surfspot{},
+		store: map[string]Surfspot{
+			"id1": Surfspot{
+				Name:       "Pipeline",
+				Founder:    "Jerry Lopez",
+				ID:         "id1",
+				Beach:      "Ehukai",
+				Difficulty: 10,
+			},
+		},
 	}
 }
 
 func main() {
 	surfspotHandlers := newSurfspotHandlers()
 	fmt.Println(surfspotHandlers)
+	fmt.Println(surfspotHandlers.store)
+	fmt.Println(surfspotHandlers.store["id1"])
+	fmt.Println(surfspotHandlers.store["id1"].Name)
+
 	// HandleFunc registers surfspotHandlers for "/surfspots"
 	http.HandleFunc("/surfspots", surfspotHandlers.get)
 
