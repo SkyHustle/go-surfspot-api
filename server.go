@@ -20,6 +20,14 @@ type surfspotHandlers struct {
 	store map[string]Surfspot
 }
 
+func (h *surfspotHandlers) surfspots(w http.ResponseWriter, r *http.Request) {
+	switch r.Method {
+	case "GET":
+		h.get(w, r)
+		return
+	}
+}
+
 // surfspotHandlers handles http request and response
 // And is the method receiver surfspotHandlers
 func (h *surfspotHandlers) get(w http.ResponseWriter, r *http.Request) {
@@ -63,7 +71,7 @@ func main() {
 	fmt.Println(surfspotHandlers.store["id1"])
 
 	// HandleFunc registers surfspotHandlers for "/surfspots"
-	http.HandleFunc("/surfspots", surfspotHandlers.get)
+	http.HandleFunc("/surfspots", surfspotHandlers.surfspots)
 
 	// Simple http server that takes a port and a default handler
 	err := http.ListenAndServe(":8080", nil)
