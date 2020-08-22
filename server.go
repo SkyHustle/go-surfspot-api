@@ -4,9 +4,10 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
+	"sync"
 )
 
-// Surfspot struct defines the characteristics of a surfspot
+// Surfspot is a data structure that holds characteristics of a surfspot
 type Surfspot struct {
 	Name       string
 	Founder    string
@@ -15,12 +16,16 @@ type Surfspot struct {
 	Difficulty int
 }
 
-// Temporary data store
+// surfspotHandler is a data structure that is used as a temporary data store
 type surfspotHandlers struct {
+	// sync.Mutex Handles concurrent requests
+	// incase there's a get and post request in parallel
+	sync.Mutex
 	store map[string]Surfspot
 }
 
-// surfspots checks what type of request is made
+// surfspots is a method for surfspothandlers
+// that checks what type of HTTP request is made
 func (h *surfspotHandlers) surfspots(w http.ResponseWriter, r *http.Request) {
 	switch r.Method {
 	case "GET":
@@ -36,20 +41,25 @@ func (h *surfspotHandlers) surfspots(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+// post handles http POST request and response
+// get is a method for surfspotHandlers
 func (h *surfspotHandlers) post(w http.ResponseWriter, r *http.Request) {
-
 }
 
-// surfspotHandlers handles http request and response
-// And is the method receiver surfspotHandlers
+// get handles http GET request and response
+// get is a method for surfspotHandlers
 func (h *surfspotHandlers) get(w http.ResponseWriter, r *http.Request) {
 	surfspots := make([]Surfspot, len(h.store))
 
+	// Lock the store when we read
+	h.Lock()
 	i := 0
 	for _, surfspot := range h.store {
 		surfspots[i] = surfspot
 		i++
 	}
+	// Unlock the store when we finish reading
+	h.Unlock()
 
 	jsonBytes, err := json.Marshal(surfspots)
 	if err != nil {
@@ -63,7 +73,6 @@ func (h *surfspotHandlers) get(w http.ResponseWriter, r *http.Request) {
 }
 
 // newSurfspotHandlers is a contructor function that does not take any arguments
-// returns surfspotHandlers object
 func newSurfspotHandlers() *surfspotHandlers {
 	return &surfspotHandlers{
 		store: map[string]Surfspot{
