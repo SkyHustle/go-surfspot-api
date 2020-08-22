@@ -20,12 +20,24 @@ type surfspotHandlers struct {
 	store map[string]Surfspot
 }
 
+// surfspots checks what type of request is made
 func (h *surfspotHandlers) surfspots(w http.ResponseWriter, r *http.Request) {
 	switch r.Method {
 	case "GET":
 		h.get(w, r)
 		return
+	case "POST":
+		h.post(w, r)
+		return
+	default:
+		w.WriteHeader(http.StatusMethodNotAllowed)
+		w.Write([]byte("Method not allowed"))
+		return
 	}
+}
+
+func (h *surfspotHandlers) post(w http.ResponseWriter, r *http.Request) {
+
 }
 
 // surfspotHandlers handles http request and response
