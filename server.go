@@ -33,9 +33,12 @@ func (h *surfspotHandlers) get(w http.ResponseWriter, r *http.Request) {
 
 	jsonBytes, err := json.Marshal(surfspots)
 	if err != nil {
-		// ToDo
+		w.WriteHeader(http.StatusInternalServerError)
+		w.Write([]byte(err.Error()))
 	}
 
+	w.Header().Add("content-type", "application/json")
+	w.WriteHeader(http.StatusOK)
 	w.Write(jsonBytes)
 }
 
