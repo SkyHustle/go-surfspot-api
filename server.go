@@ -1,10 +1,12 @@
 package main
 
 import (
+	"encoding/json"
 	"fmt"
 	"net/http"
 )
 
+// Surfspot struct defines the characteristics of a surfspot
 type Surfspot struct {
 	Name       string
 	Founder    string
@@ -21,7 +23,20 @@ type surfspotHandlers struct {
 // surfspotHandlers handles http request and response
 // And is the method receiver surfspotHandlers
 func (h *surfspotHandlers) get(w http.ResponseWriter, r *http.Request) {
+	surfspots := make([]Surfspot, len(h.store))
 
+	i := 0
+	for _, surfspot := range h.store {
+		surfspots[i] = surfspot
+		i++
+	}
+
+	jsonBytes, err := json.Marshal(surfspots)
+	if err != nil {
+		// ToDo
+	}
+
+	w.Write(jsonBytes)
 }
 
 // newSurfspotHandlers is a contructor function that does not take any arguments
@@ -42,10 +57,7 @@ func newSurfspotHandlers() *surfspotHandlers {
 
 func main() {
 	surfspotHandlers := newSurfspotHandlers()
-	fmt.Println(surfspotHandlers)
-	fmt.Println(surfspotHandlers.store)
 	fmt.Println(surfspotHandlers.store["id1"])
-	fmt.Println(surfspotHandlers.store["id1"].Name)
 
 	// HandleFunc registers surfspotHandlers for "/surfspots"
 	http.HandleFunc("/surfspots", surfspotHandlers.get)
