@@ -3,15 +3,16 @@ package main
 import (
 	"encoding/json"
 	"fmt"
+	"io/ioutil"
 	"net/http"
 	"sync"
 )
 
 // Surfspot is a data structure that holds characteristics of a surfspot
 type Surfspot struct {
+	ID         string
 	Name       string
 	Founder    string
-	ID         string
 	Beach      string
 	Difficulty int
 }
@@ -44,6 +45,29 @@ func (h *surfspotHandlers) surfspots(w http.ResponseWriter, r *http.Request) {
 // post handles http POST request and response
 // get is a method for surfspotHandlers
 func (h *surfspotHandlers) post(w http.ResponseWriter, r *http.Request) {
+	// Convert raw request body to bytes
+	bodyBytes, err := ioutil.ReadAll(r.Body)
+	defer r.Body.Close()
+	if err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		w.Write([]byte(err.Error()))
+	}
+
+	// UnMarshal bodyBytes into a Body object
+	var surfspot Surfspot
+	err = json.Unmarshal(bodyBytes, &surfspot)
+
+	if err != nil {
+		w.WriteHeader(http.StatusBadRequest)
+		w.Write([]byte(err.Error()))
+	}
+
+	// Lock the store when we write
+	h.Lock()
+	fmt.Println("Store Before ", h.store)
+	h.store[surfspot.ID] = surfspot
+	fmt.Println("Store Afte ", h.store)
+	defer h.Unlock()
 }
 
 // get handles http GET request and response
@@ -77,9 +101,9 @@ func newSurfspotHandlers() *surfspotHandlers {
 	return &surfspotHandlers{
 		store: map[string]Surfspot{
 			"id1": Surfspot{
+				ID:         "id1",
 				Name:       "Pipeline",
 				Founder:    "Jerry Lopez",
-				ID:         "id1",
 				Beach:      "Ehukai",
 				Difficulty: 10,
 			},
