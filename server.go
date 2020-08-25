@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"io/ioutil"
 	"net/http"
+	"strings"
 	"sync"
 	"time"
 )
@@ -108,17 +109,26 @@ func (h *surfspotHandlers) get(w http.ResponseWriter, r *http.Request) {
 	w.Write(jsonBytes)
 }
 
+// getSurfSpot retrieves surfspot by ID
+func (h *surfspotHandlers) getSurfspot(w http.ResponseWriter, r *http.Request) {
+	parts := strings.Split(r.URL.String(), "/")
+	if len(parts) != 3 {
+		w.WriteHeader(http.StatusNotFound)
+		return
+	}
+}
+
 // newSurfspotHandlers is a contructor function that does not take any arguments
 func newSurfspotHandlers() *surfspotHandlers {
 	return &surfspotHandlers{
 		store: map[string]Surfspot{
-			"id1": Surfspot{
-				ID:         "id1",
-				Name:       "Pipeline",
-				Founder:    "Jerry Lopez",
-				Beach:      "Ehukai",
-				Difficulty: 10,
-			},
+			// "id1": Surfspot{
+			// 	ID:         "id1",
+			// 	Name:       "Pipeline",
+			// 	Founder:    "Jerry Lopez",
+			// 	Beach:      "Ehukai",
+			// 	Difficulty: 10,
+			// },
 		},
 	}
 }
@@ -129,6 +139,8 @@ func main() {
 
 	// HandleFunc registers surfspotHandlers for "/surfspots"
 	http.HandleFunc("/surfspots", surfspotHandlers.surfspots)
+
+	http.HandleFunc("/surfspots/", surfspotHandlers.getSurfspot)
 
 	// Simple http server that takes a port and a default handler
 	err := http.ListenAndServe(":8080", nil)
