@@ -157,6 +157,7 @@ type adminPortal struct {
 	password string
 }
 
+// newAdmin Portal returns an instance of adminPortal
 func newAdminPortal() *adminPortal {
 	password := os.Getenv("ADMIN_PASSWORD")
 	if password == "" {
@@ -165,8 +166,20 @@ func newAdminPortal() *adminPortal {
 	return &adminPortal{password: password}
 }
 
+func (a adminPortal) handler(w http.ResponseWriter, r *http.Request) {
+	user, pass, ok := r.BasicAuth()
+	if !ok || user != "admin" || pass != a.password {
+		w.WriteHeader(http.StatusUnauthorized)
+		w.Write([]byte("401 - unauthorized"))
+		return
+	}
+
+	w.Write([]byte("<html><h2>Secret Admin Portal</h2></html>"))
+}
+
 func main() {
-	// admin := newAdminPortal()
+	admin := newAdminPortal()
+	http.HandleFunc("/admin", admin.handler)
 
 	surfspotHandlers := newSurfspotHandlers()
 	fmt.Println(surfspotHandlers.store)
