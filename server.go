@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
+	"math/rand"
 	"net/http"
 	"os"
 	"strings"
@@ -78,9 +79,7 @@ func (h *surfspotHandlers) post(w http.ResponseWriter, r *http.Request) {
 
 	// Lock the store when we write
 	h.Lock()
-	fmt.Println("Store Before ", h.store)
 	h.store[surfspot.ID] = surfspot
-	fmt.Println("Store Afte ", h.store)
 	defer h.Unlock()
 }
 
@@ -110,8 +109,31 @@ func (h *surfspotHandlers) get(w http.ResponseWriter, r *http.Request) {
 	w.Write(jsonBytes)
 }
 
+// getRandomSurfspot gets a random surfspot from the store
 func (h *surfspotHandlers) getRandomSurfspot(w http.ResponseWriter, r *http.Request) {
-	w.Write([]byte("Here's a random surf spot for you"))
+	ids := make([]string, len(h.store))
+
+	h.Lock()
+	i := 0
+	for id := range h.store {
+		ids[i] = id
+		i++
+	}
+	defer h.Unlock()
+
+	var target string
+	if len(ids) == 0 {
+		w.WriteHeader(http.StatusNotFound)
+		return
+	} else if len(ids) == 1 {
+		target = ids[0]
+	} else {
+		rand.Seed(time.Now().UnixNano())
+		target = ids[rand.Intn(len(ids))]
+
+	}
+
+	fmt.Println(target)
 }
 
 // getSurfSpot retrieves surfspot by ID
