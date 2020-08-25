@@ -6,6 +6,7 @@ import (
 	"io/ioutil"
 	"net/http"
 	"sync"
+	"time"
 )
 
 // Surfspot is a data structure that holds characteristics of a surfspot
@@ -61,6 +62,9 @@ func (h *surfspotHandlers) post(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusBadRequest)
 		w.Write([]byte(err.Error()))
 	}
+
+	// Set a unique ID
+	surfspot.ID = fmt.Sprintf("%d", time.Now().UnixNano())
 
 	// Lock the store when we write
 	h.Lock()
