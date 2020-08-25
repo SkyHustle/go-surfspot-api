@@ -116,6 +116,25 @@ func (h *surfspotHandlers) getSurfspot(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusNotFound)
 		return
 	}
+
+	h.Lock()
+	surfspot, ok := h.store[parts[2]]
+	h.Unlock()
+	if !ok {
+		w.WriteHeader(http.StatusNotFound)
+		return
+	}
+
+	jsonBytes, err := json.Marshal(surfspot)
+	if err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		w.Write([]byte(err.Error()))
+	}
+
+	w.Header().Add("content-type", "application/json")
+	w.WriteHeader(http.StatusOK)
+	w.Write(jsonBytes)
+
 }
 
 // newSurfspotHandlers is a contructor function that does not take any arguments
