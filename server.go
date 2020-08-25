@@ -110,11 +110,20 @@ func (h *surfspotHandlers) get(w http.ResponseWriter, r *http.Request) {
 	w.Write(jsonBytes)
 }
 
+func (h *surfspotHandlers) getRandomSurfspot(w http.ResponseWriter, r *http.Request) {
+	w.Write([]byte("Here's a random surf spot for you"))
+}
+
 // getSurfSpot retrieves surfspot by ID
 func (h *surfspotHandlers) getSurfspot(w http.ResponseWriter, r *http.Request) {
 	parts := strings.Split(r.URL.String(), "/")
 	if len(parts) != 3 {
 		w.WriteHeader(http.StatusNotFound)
+		return
+	}
+
+	if parts[2] == "random" {
+		h.getRandomSurfspot(w, r)
 		return
 	}
 
