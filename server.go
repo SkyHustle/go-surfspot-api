@@ -133,7 +133,8 @@ func (h *surfspotHandlers) getRandomSurfspot(w http.ResponseWriter, r *http.Requ
 
 	}
 
-	fmt.Println(target)
+	w.Header().Add("location", fmt.Sprintf("/surfspots/%s", target))
+	w.WriteHeader(http.StatusFound)
 }
 
 // getSurfSpot retrieves surfspot by ID
