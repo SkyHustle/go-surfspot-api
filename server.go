@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"io/ioutil"
 	"net/http"
+	"os"
 	"strings"
 	"sync"
 	"time"
@@ -152,9 +153,23 @@ func newSurfspotHandlers() *surfspotHandlers {
 	}
 }
 
+type adminPortal struct {
+	password string
+}
+
+func newAdminPortal() *adminPortal {
+	password := os.Getenv("ADMIN_PASSWORD")
+	if password == "" {
+		panic("required env var ADMIN_PASSWORD not set")
+	}
+	return &adminPortal{password: password}
+}
+
 func main() {
+	// admin := newAdminPortal()
+
 	surfspotHandlers := newSurfspotHandlers()
-	fmt.Println(surfspotHandlers.store["id1"])
+	fmt.Println(surfspotHandlers.store)
 
 	// HandleFunc registers surfspotHandlers for "/surfspots"
 	http.HandleFunc("/surfspots", surfspotHandlers.surfspots)
