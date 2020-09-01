@@ -13,6 +13,8 @@ A simple REST API built using No third-party packages/dependencies
 * []  `DELETE /surfspots/{id}` returns the deleted surfspot as JSON
 * []  `PUT /surfspots/{id}` returns the updated surfspot as JSON
 
+* [] each endpoint should have a test
+
 ### Data Types
 
 A surfspot object should look like this:
