@@ -10,7 +10,7 @@ A simple REST API built using No third-party packages/dependencies
 * [x] `GET /surfspots/random` redirects (Status 302) to a random surfspot
 * [x] `POST /surfspots` accepts a new surfspot to be added
 * [x] `POST /surfspots` returns status 415 if content is not `application/json`
-* []  `DELETE /surfspots/{id}` returns the deleted surfspot as JSON
+* []  `DELETE /surfspots/{id}` returns an empty object {}
 * []  `PUT /surfspots/{id}` returns the updated surfspot as JSON
 
 * [] each endpoint should have a test
