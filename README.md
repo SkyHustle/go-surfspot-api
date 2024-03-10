@@ -1,4 +1,4 @@
-# go-surfspot-api
+# Surf Spots Api
 
 A simple REST API built using No third-party packages/dependencies
 
